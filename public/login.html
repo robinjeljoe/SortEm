@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SortEm - Login</title>
+    <link rel="shortcut icon" type="image/x-icon" href="1.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4285f4; /* Google Blue */
+            --bg-color: #121212;      /* Dark background */
+            --card-bg: #1e1e1e;     /* Slightly lighter dark for card */
+            --text-primary: #ffffff;  /* White text */
+            --text-secondary: #e0e0e0;/* Lighter grey text */
+            --button-hover: #2a75e8;  /* Lighter blue on hover */
+            --shadow-color: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background:linear-gradient(100deg, #6c1221 0%, #401b98 100%);
+            color: var(--text-primary);
+        }
+
+        .login-container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px var(--shadow-color);
+            text-align: center;
+            width: 100%;
+            max-width: 400px; /* Limit width for better readability */
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .google-icon {
+            width: 80px; /* Adjusted size for balance */
+            margin-bottom: 24px;
+            transition: transform 0.3s ease; /* Added transition for hover effect */
+        }
+        .google-icon:hover{
+             transform: scale(1.10) rotate(-5deg);
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            color: var(--text-primary);
+             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn {
+            display: inline-block; /* Allows padding and width to be applied */
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%; /* Full-width button */
+            box-sizing: border-box; /* Include padding in width */
+            font-size: 16px; /* Larger font size for better readability */
+        }
+
+        .btn:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3); /* Subtle shadow on hover */
+        }
+    </style>
+    <script>
+        // Function to parse query parameters from the URL (remains unchanged)
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        // Check if the 'code' parameter is present in the URL (remains unchanged)
+        var code = getParameterByName('code');
+        if (code) {
+            // Redirect to the Google callback endpoint
+            window.location.href = '/auth/google/callback?code=' + code;
+        }
+    </script>
+</head>
+<body id="body">
+    <div class="login-container">
+        <img src="1.png" alt="Google Logo" class="google-icon">
+        <h2>Sign in to SortEm</h2>
+        <a href="/auth/google" class="btn">
+            Sign in with Google
+        </a>
+    </div>
+</body>
+</html>

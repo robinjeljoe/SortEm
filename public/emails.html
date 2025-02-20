@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="1.png" />
+    <title>SortEm - Gmail Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3c3d5a;
+            --hover-color: #2f3143;
+            --bg-color: #1f2326;
+            --card-bg: #281818;
+            --text-primary: #cacbcf;
+            --text-secondary: #8494aa;
+            --progress-bg: #2d2d2d;
+            --progress-fill: #6366f1;
+            --tag-bg: #37375f;
+            --dropdown-bg: #281818;
+            --dropdown-hover: #3c3d5a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .pagination span {
+            color: var(--text-secondary);
+            user-select: none;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1px 24px;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(-5deg);
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #e01a3b 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e01a3b 0%, #8b5cf6 100%);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .controls-container {
+            padding: 12px;
+            background-color: var(--card-bg);
+            margin: 20px;
+            border-radius: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .search-container {
+            display: flex;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 12px 0 0 12px;
+            border: 1px solid #4a4b6b;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 0 12px 12px 0;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            cursor: pointer;
+        }
+
+        /* New dropdown styles */
+        .category-dropdown {
+            position: relative;
+            min-width: 150px;
+        }
+
+        .dropdown-btn {
+            width: 100%;
+            padding: 10px 16px;
+            background-color: var(--primary-color);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--dropdown-bg);
+            min-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        .dropdown-item {
+            padding: 10px 16px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--dropdown-hover);
+        }
+
+        .dropdown-item.active {
+            background-color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .compose-btn {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .tts-button {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-left: 10px;
+        }
+        
+        .tts-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .compose-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .email-container {
+            display: flex;
+            height: calc(100vh - 200px);
+            gap: 24px;
+            padding: 0 24px 24px 24px;
+        }
+
+        .emails-list {
+            flex: 1;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .email-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            background-color: var(--bg-color);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .email-item:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #e01a3b1e 0%, #8a5cf63f 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .email-header-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .email-sender {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .email-date {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .email-summary {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .email-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            margin-right: 5px;
+            margin-top: 8px;
+            border-radius: 10px;
+            background-color: var(--tag-bg);
+            color: var(--text-primary);
+            font-size: 12px;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .status-bar.active {
+            transform: translateY(0);
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background-color: var(--progress-bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            min-width: 100px;
+        }
+
+        .email-details {
+            display: none;
+            flex: 1;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .email-details.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .email-tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .back-button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+
+        .back-button:hover {
+            background-color: rgba(99, 102, 241, 0.2);
+            transform: translateX(-4px);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 10px 10px;
+            padding: 5px 20px;
+            border: 3px solid var(--primary-color);
+            background-color: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: 15px;
+        }
+
+        .pagination button:hover {
+            background: linear-gradient(135deg, #e01a3b 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .pagination button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body style="overflow: hidden;">
+    <div class="header">
+        <div class="logo-container">
+            <img src="1.png" alt="Gmail" class="logo">
+            <a href="/" style="text-decoration: none;"><h1 class="app-title" >SortEm</h1>
+        </a>
+        </div>
+        <div class="controls-container">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search emails...">
+                <button class="search-button" onclick="searchEmails()">🔍</button>
+            </div>
+            <div class="category-dropdown">
+                <button id="dropdownBtn" class="dropdown-btn">
+                    <span id="selectedCategory">All Categories</span>
+                    <span>▼</span>
+                </button>
+                <div id="categoryDropdown" class="dropdown-content">
+                    <!-- Categories will be populated here -->
+                </div>
+            </div>
+            <button class="compose-btn" onclick="startLiveRefresh()">Refresh</button>
+        </div>
+        <a href="/auth/logout" class="logout-btn">Logout</a>
+    </div>
+
+    
+    <div id="pagination" class="pagination"></div>
+
+    <div class="email-container">
+        <div id="emailsList" class="emails-list"></div>
+        <div id="emailDetails" class="email-details" style="overflow: scroll;"></div>
+    </div>
+
+    <div id="statusBar" class="status-bar">
+        <div class="status-text">Loading...</div>
+        <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <div id="progressText" class="status-text">0%</div>
+    </div>
+    
+
+    <script>
+        let currentEmails = [];
+        let refreshIntervalId = null;
+        const REFRESH_INTERVAL = 5000;
+        let currentPage = 1;
+        let emailsPerPage = 10;
+        let totalEmails = 0;
+        let categories = [];
+        let currentCategory = '';
+        let currentSearchTerm = '';
+
+        // Fetch categories (tags) from the server
+        async function fetchCategories() {
+            try {
+                const response = await fetch('/api/categories');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                categories = await response.json();
+                displayCategoriesDropdown();
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        }
+
+        // Display categories in dropdown
+        function displayCategoriesDropdown() {
+            const dropdown = document.getElementById('categoryDropdown');
+            // Add "All" option first
+            dropdown.innerHTML = `
+                <div class="dropdown-item ${currentCategory === '' ? 'active' : ''}" 
+                     onclick="filterByTag('')">All</div>
+            `;
+            
+            categories.forEach(category => {
+                dropdown.innerHTML += `
+                    <div class="dropdown-item ${currentCategory === category ? 'active' : ''}" 
+                         onclick="filterByTag('${category}')">${category}</div>
+                `;
+            });
+            
+            // Update the selected category text
+            document.getElementById('selectedCategory').textContent = 
+                currentCategory ? currentCategory : 'All Categories';
+        }
+
+        // Toggle dropdown
+        document.getElementById('dropdownBtn').addEventListener('click', function() {
+            document.getElementById('categoryDropdown').classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('.dropdown-btn') && 
+                !event.target.parentNode.matches('.dropdown-btn')) {
+                const dropdown = document.getElementById('categoryDropdown');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        // Filter emails by tag
+        function filterByTag(tag) {
+            currentCategory = tag;
+            currentPage = 1;
+            // Close dropdown after selection
+            document.getElementById('categoryDropdown').classList.remove('show');
+            // Update selected category text
+            document.getElementById('selectedCategory').textContent = 
+                tag ? tag : 'All Categories';
+            fetchEmails(currentPage, emailsPerPage);
+        }
+
+        // Search emails
+        function searchEmails() {
+            const searchInput = document.getElementById('searchInput');
+            currentSearchTerm = searchInput.value.trim();
+            currentPage = 1;
+            fetchEmails(currentPage, emailsPerPage);
+        }
+
+        // Fetch emails with search and filter parameters
+        async function fetchEmails(page = 1, limit = 10) {
+            const emailsList = document.getElementById('emailsList');
+            emailsList.innerHTML = '<div class="loading">Loading...</div>';
+
+            try {
+                let url = `/api/emails?page=${page}&limit=${limit}&sort=desc`;
+                
+                if (currentSearchTerm) {
+                    url += `&search=${encodeURIComponent(currentSearchTerm)}`;
+                }
+                
+                if (currentCategory) {
+                    url += `&category=${encodeURIComponent(currentCategory)}`;
+                }
+                
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                currentEmails = data.data;
+                totalEmails = data.total;
+                currentPage = data.page;
+                emailsPerPage = data.limit;
+                displayEmails();
+                displayPagination();
+            } catch (error) {
+                console.error("Error fetching emails:", error);
+                emailsList.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Display emails with tags
+        function displayEmails() {
+            const emailsList = document.getElementById('emailsList');
+            emailsList.innerHTML = currentEmails.map(email => {
+                // Use the categories directly, as they should already be a comma-separated string
+                const emailCategories = email.categories || '';
+                
+                // Create tags HTML
+                const tagsHtml = emailCategories.split(',').map(tag => 
+                    `<span class="email-tag">${escapeHtml(tag.trim())}</span>`  // Trim whitespace
+                ).join('');
+                
+                return `
+                    <div class="email-item" onclick="viewEmail('${email.id}')">
+                        <div class="email-header-row">
+                            <div class="email-sender">${escapeHtml(email.sender)}</div>
+                            <div class="email-date">${escapeHtml(formatDate(email.date))}</div>
+                        </div>
+                        <div class="email-summary">${escapeHtml(email.summary || 'No summary')}</div>
+                        <div>${tagsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+
+        function displayPagination() {
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+            const totalPages = Math.ceil(totalEmails / emailsPerPage);
+            const maxVisiblePages = 5;
+
+            let pages = [];
+            pages.push(1);
+            
+            if (currentPage > maxVisiblePages + 1) {
+                pages.push('...');
+            }
+
+            let start = Math.max(2, currentPage - Math.floor(maxVisiblePages/2));
+            let end = Math.min(totalPages - 1, currentPage + Math.floor(maxVisiblePages/2));
+
+            for (let i = start; i <= end; i++) {
+                pages.push(i);
+            }
+
+            if (currentPage < totalPages - maxVisiblePages) {
+                pages.push('...');
+            }
+
+            if (totalPages > 1) {
+                pages.push(totalPages);
+            }
+
+            pages.forEach((page) => {
+                if (page === '...') {
+                    const span = document.createElement('span');
+                    span.textContent = '...';
+                    span.style.margin = '0 5px';
+                    paginationContainer.appendChild(span);
+                } else {
+                    const button = document.createElement('button');
+                    button.textContent = page;
+                    if (page === currentPage) {
+                        button.classList.add('active');
+                    }
+                    button.addEventListener('click', () => fetchEmails(page, emailsPerPage));
+                    paginationContainer.appendChild(button);
+                }
+            });
+        }
+
+        async function viewEmail(emailId) {
+            const emailsList = document.getElementById('emailsList');
+            const emailDetails = document.getElementById('emailDetails');
+
+            emailDetails.innerHTML = '<div class="loading">Loading...</div>';
+            emailDetails.classList.add('active');
+            emailsList.style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/emails/${emailId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const email = await response.json();
+                
+                const emailCategories = email.categories || '';
+                
+                // Create tags HTML
+                const tagsHtml = emailCategories.split(',').map(tag => 
+                    `<span class="email-tag">${escapeHtml(tag.trim())}</span>`
+                ).join('');
+                
+                emailDetails.innerHTML = `
+        <button class="back-button" onclick="showInbox()">← Back to Inbox</button>
+        <button class="tts-button" onclick="readSummaryAloud()">🔊 Read Summary</button>
+        <h2>${escapeHtml(email.subject)}</h2>
+        <div><strong>From:</strong> ${escapeHtml(email.sender)}</div>
+        <div><strong>Date:</strong> ${escapeHtml(formatDate(email.date))}</div>
+        <div class="email-tags-container">${tagsHtml}</div>
+        <div id="email-summary-tts" >${escapeHtml(email.summary)}</div>
+        <hr>
+        <p>${escapeHtml(email.body)}</p>
+    `;
+} catch (error) {
+                console.error("Error fetching email details:", error);
+                emailDetails.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
+            }
+        }
+
+        function showInbox() {
+            document.getElementById('emailDetails').classList.remove('active');
+            document.getElementById('emailsList').style.display = 'block';
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleDateString();
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe == null ? '' : String(unsafe)
+            .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+        }
+
+        function composeEmail() {
+            alert('Compose feature coming soon!');
+        }
+
+        function startLiveRefresh() {
+            fetchEmails(currentPage,emailsPerPage);
+        }
+
+
+        function readSummaryAloud() {
+            if ('speechSynthesis' in window) {
+                const summaryElement = document.getElementById('email-summary-tts');
+                if (summaryElement?.textContent) {
+                    const utterance = new SpeechSynthesisUtterance(summaryElement.textContent);
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alert('No summary available.');
+                }
+            } else {
+                alert('Text-to-speech is not supported in your browser.');
+            }
+        }
+
+        // Enable search by pressing Enter key
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                searchEmails();
+            }
+        });
+
+        // Initial load
+        fetchCategories(); 
+        fetchEmails();
+        startLiveRefresh();
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SortEm</title>
+    <link rel="shortcut icon" type="image/x-icon" href="1.png" />
+  <link rel="stylesheet" href="./test.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="font-family: 'Poppins', sans-serif;font-weight: 500;" id="body">
+  <div id="custom-cursor"></div>
+<!-- partial:index.partial.html -->
+<script type="x-shader/x-vertex" id="vertexshader">
+  attribute float size;
+  attribute vec3 customColor;
+  varying vec3 vColor;
+
+  void main() {
+    vColor = customColor;
+    vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+    gl_PointSize = size * ( 300.0 / -mvPosition.z );
+    gl_Position = projectionMatrix * mvPosition;
+  }
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+  uniform vec3 color;
+  uniform sampler2D pointTexture;
+  varying vec3 vColor;
+
+  void main() {
+    gl_FragColor = vec4( color * vColor, 1.0 );
+    gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
+  }
+  
+</script>
+
+
+<!-- partial -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.min.js'></script>
+<script src="./test.js"></script>
+<script>
+  window.addEventListener('scroll', onScroll);
+  function onScroll(){
+    document.getElementById('hero').style.opacity = 2 - scrollY * 0.01;
+  }
+
+
+  const cursor = document.getElementById("custom-cursor");
+
+document.addEventListener("mousemove", (e) => {
+    cursor.style.left = `${e.clientX}px`;
+    cursor.style.top = `${e.clientY}px`;
+});
+
+// Enlarge cursor when focusing on input fields or interactive elements
+document.querySelectorAll("input, button, a, textarea, select").forEach((el) => {
+    el.addEventListener("mouseenter", () => cursor.classList.add("focused"));
+    el.addEventListener("mouseleave", () => cursor.classList.remove("focused"));
+});
+
+</script>
+
+
+<header class="header" style="position: fixed; background: transparent;" id="header">
+  <div class="logo-container">
+    <img src="1.png" alt="Gmail" class="logo">
+    <h1 class="app-title">SortEm</h1>
+  </div>
+  <nav class="nav-links">
+    <a href="#fake">Features</a>
+    <a href="#">Pricing</a>
+    <a href="#">About</a>
+    <a href="/login.html">Login</a> <!-- Link to your login page -->
+  </nav>
+</header>
+
+<div id="magic"></div>
+  <div class="playground-scrollable">
+    <div class="logo-text-container">
+      <h1 class="d-logo-text" style="display:none;">SortEm</h1>
+    </div>
+  </div>
+
+  <!-- After the playground-scrollable div -->
+
+  <section class="hero-section" style="opacity: 2;" id="hero">
+    <!-- Hero content -->
+     <br><br><br><br><br><br><br><br>
+     <br><br><br><br><br>
+     
+    <p class="hero-subtitle">SortEm helps you organize, prioritize, and conquer your email chaos. Spend less time sifting and more time doing.</p>
+    <a  class="cta-button" id="button" href="/login.html"">Get Started for Free</a>
+  </section>
+  <br><br><br><br><br><br><br><br>
+     <br><br><br><br><br><br><br><br>
+     <div class="fake" id="fake"></div>
+     <br><br><br><br><br><br><br><br>
+  <section class="features-section">
+    <div class="feature-card" id="feature">
+      <div class="feature-icon">✉️</div>
+      <h2 class="feature-title">Smart Sorting</h2>
+      <p class="feature-description">Automatically categorize emails by sender, subject, and content, so you can focus on what matters.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <h2 class="feature-title">Lightning Fast</h2>
+      <p class="feature-description">Experience blazing-fast email processing and management, powered by advanced algorithms.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h2 class="feature-title">Secure & Private</h2>
+      <p class="feature-description">Your data is safe with us. We use industry-leading security practices to protect your information.</p>
+    </div>
+  </section>
+     <br><br><br><br><br><br><br><br>
+  <footer class="footer">
+    <!-- Footer content -->
+    © 2025 SortEm. All rights reserved.
+  </footer>
+</div>
+
+</body>
+</html>
